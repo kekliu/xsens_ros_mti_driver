@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(xsens_mti_driver)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+set(CMAKE_CXX_STANDARD 11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -51,7 +51,10 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-link_directories(lib/xspublic/xscontroller lib/xspublic/xscommon lib/xspublic/xstypes)
+add_subdirectory(lib/xspublic/xstypes)
+add_subdirectory(lib/xspublic/xscommon)
+add_subdirectory(lib/xspublic/xscontroller)
+
 add_executable(
 	xsens_mti_node
 	src/main.cpp
@@ -66,5 +69,19 @@ target_link_libraries(
 	pthread
 	dl
 	${catkin_LIBRARIES}
+)
+
+############
+## Intall ##
+############
+
+install(TARGETS xsens_mti_node
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY launch param rviz urdf
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
